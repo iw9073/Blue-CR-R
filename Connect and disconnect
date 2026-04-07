@@ -1,0 +1,8 @@
+def toggle_connection(self):
+    mac = self.selected_mac()
+    device = self.devices.get(mac)
+
+    if device.connected:
+        self.safe_call(self.bt.disconnect, mac)
+    else:
+        self.safe_call(self.bt.connect, mac)
