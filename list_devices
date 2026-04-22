@@ -1,0 +1,51 @@
+import asyncio
+import platform  # used to make sure this only runs on windows
+import logging   # used to log actions instead of only printing
+
+from winrt.windows.devices.enumeration import DeviceInformation, DeviceClass
+
+
+# makes sure program only runs on windows since winrt is windows-only
+if platform.system() != "Windows":
+    print("this app only works on windows")
+    exit()
+
+# basic logging setup
+logging.basicConfig(level=logging.INFO)
+
+
+async def list_bluetooth_devices():
+    """
+    finds all bluetooth devices and displays them in a list
+    also filter results because DeviceClass.ALL returns too many unrelated devices
+    """
+    try:
+        logging.info("searching for bluetooth devices...")
+
+        # get ALL devices 
+        devices = await DeviceInformation.find_all_async(DeviceClass.ALL)
+
+        filtered = []
+
+        # filter only devices that:
+        # - have a name (real devices)
+        # - contain 'Bluetooth' in their ID (this is how winrt identifies bluetooth devices, it’s not perfect but it works)
+        for d in devices:
+            if d.name and "Bluetooth" in str(d.id):
+                filtered.append(d)
+
+        print("\nbluetooth devices:\n")
+
+        # display clean numbered list
+        for i, d in enumerate(filtered):
+            print(f"{i+1}. {d.name}")
+
+        print(f"\nfound {len(filtered)} bluetooth devices")
+
+    except Exception as e:
+        logging.error(f"error listing devices: {e}")
+
+
+# run file
+if __name__ == "__main__":
+    asyncio.run(list_bluetooth_devices())
