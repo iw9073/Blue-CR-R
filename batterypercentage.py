@@ -16,6 +16,7 @@ async def battery(addr):
 
 if __name__ == "__main__":
     # ask user for bluetooth address
+    # to get bluetooth address: Device Manger > Bluetooth > right click your device > properties > details > property: Bluetooth Device Address
     addr_input = input("enter bluetooth address (no colons, example A1B2C3D4E5F6): ").strip()
 
     try:
